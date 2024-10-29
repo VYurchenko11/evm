@@ -1,0 +1,144 @@
+bubbleSort:
+        pushq   %rbp
+        movq    %rsp, %rbp
+        movq    %rdi, -24(%rbp)
+        movl    %esi, -28(%rbp)
+        movl    $0, -4(%rbp)
+        jmp     .L2
+.L6:
+        movl    $0, -8(%rbp)
+        jmp     .L3
+.L5:
+        movl    -8(%rbp), %eax
+        cltq
+        leaq    0(,%rax,4), %rdx
+        movq    -24(%rbp), %rax
+        addq    %rdx, %rax
+        movl    (%rax), %edx
+        movl    -8(%rbp), %eax
+        cltq
+        addq    $1, %rax
+        leaq    0(,%rax,4), %rcx
+        movq    -24(%rbp), %rax
+        addq    %rcx, %rax
+        movl    (%rax), %eax
+        cmpl    %eax, %edx
+        jle     .L4
+        movl    -8(%rbp), %eax
+        cltq
+        leaq    0(,%rax,4), %rdx
+        movq    -24(%rbp), %rax
+        addq    %rdx, %rax
+        movl    (%rax), %eax
+        movl    %eax, -12(%rbp)
+        movl    -8(%rbp), %eax
+        cltq
+        addq    $1, %rax
+        leaq    0(,%rax,4), %rdx
+        movq    -24(%rbp), %rax
+        addq    %rdx, %rax
+        movl    -8(%rbp), %edx
+        movslq  %edx, %rdx
+        leaq    0(,%rdx,4), %rcx
+        movq    -24(%rbp), %rdx
+        addq    %rcx, %rdx
+        movl    (%rax), %eax
+        movl    %eax, (%rdx)
+        movl    -8(%rbp), %eax
+        cltq
+        addq    $1, %rax
+        leaq    0(,%rax,4), %rdx
+        movq    -24(%rbp), %rax
+        addq    %rax, %rdx
+        movl    -12(%rbp), %eax
+        movl    %eax, (%rdx)
+.L4:
+        addl    $1, -8(%rbp)
+.L3:
+        movl    -28(%rbp), %eax
+        subl    $1, %eax
+        subl    -4(%rbp), %eax
+        cmpl    %eax, -8(%rbp)
+        jl      .L5
+        addl    $1, -4(%rbp)
+.L2:
+        movl    -28(%rbp), %eax
+        subl    $1, %eax
+        cmpl    %eax, -4(%rbp)
+        jl      .L6
+        nop
+        nop
+        popq    %rbp
+        ret
+.LC1:
+        .string "%f\n"
+main:
+        pushq   %rbp
+        movq    %rsp, %rbp
+        subq    $48, %rsp
+        call    clock
+        movq    %rax, -16(%rbp)
+        movl    $150000, -20(%rbp)
+        movl    $0, %edi
+        call    time
+        movl    %eax, %edi
+        call    srand
+        movl    -20(%rbp), %eax
+        cltq
+        salq    $2, %rax
+        movq    %rax, %rdi
+        call    malloc
+        movq    %rax, -32(%rbp)
+        movl    $0, -4(%rbp)
+        jmp     .L8
+.L9:
+        call    rand
+        movl    -4(%rbp), %edx
+        movslq  %edx, %rdx
+        leaq    0(,%rdx,4), %rcx
+        movq    -32(%rbp), %rdx
+        leaq    (%rcx,%rdx), %rsi
+        movslq  %eax, %rdx
+        imulq   $1172812403, %rdx, %rdx
+        shrq    $32, %rdx
+        sarl    $18, %edx
+        movl    %eax, %ecx
+        sarl    $31, %ecx
+        subl    %ecx, %edx
+        imull   $960000, %edx, %ecx
+        subl    %ecx, %eax
+        movl    %eax, %edx
+        movl    %edx, (%rsi)
+        addl    $1, -4(%rbp)
+.L8:
+        movl    -4(%rbp), %eax
+        cmpl    -20(%rbp), %eax
+        jl      .L9
+        movl    -20(%rbp), %edx
+        movq    -32(%rbp), %rax
+        movl    %edx, %esi
+        movq    %rax, %rdi
+        call    bubbleSort
+        movq    -32(%rbp), %rax
+        movq    %rax, %rdi
+        call    free
+        call    clock
+        movq    %rax, -40(%rbp)
+        movq    -40(%rbp), %rax
+        subq    -16(%rbp), %rax
+        pxor    %xmm0, %xmm0
+        cvtsi2sdq       %rax, %xmm0
+        movsd   .LC0(%rip), %xmm1
+        divsd   %xmm1, %xmm0
+        movsd   %xmm0, -48(%rbp)
+        movq    -48(%rbp), %rax
+        movq    %rax, %xmm0
+        movl    $.LC1, %edi
+        movl    $1, %eax
+        call    printf
+        movl    $0, %eax
+        leave
+        ret
+.LC0:
+        .long   0
+        .long   1093567616
